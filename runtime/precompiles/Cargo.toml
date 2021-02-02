@@ -7,16 +7,22 @@ edition = "2018"
 [dependencies]
 log = "0.4.8"
 rustc-hex = { version = "2.0.1", default-features = false }
-ripemd160 = { version = "0.9", default-features = false }
 
-sp-std = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "rococo-branch" }
-sp-core = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "rococo-branch" }
-pallet-evm = { git = "https://github.com/purestake/substrate", default-features = false, branch = "v0.3-hotfixes" }
+sp-std = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
+sp-core = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
+pallet-evm = { git = "https://github.com/purestake/frontier", default-features = false, branch = "v0.5-hotfixes" }
+# pallet-evm-precompile-bn128 = { git = "https://github.com/purestake/frontier", default-features = false, branch = "v0.5-hotfixes" }
+pallet-evm-precompile-dispatch = { git = "https://github.com/purestake/frontier", default-features = false, branch = "v0.5-hotfixes" }
+pallet-evm-precompile-modexp = { git = "https://github.com/purestake/frontier", default-features = false, branch = "v0.5-hotfixes" }
+pallet-evm-precompile-simple = { git = "https://github.com/purestake/frontier", default-features = false, branch = "v0.5-hotfixes" }
 
 [features]
 default = [ "std" ]
 std = [
 	"sp-std/std",
 	"sp-core/std",
-	"ripemd160/std",
+	# "pallet-evm-precompile-bn128/std",
+	"pallet-evm-precompile-dispatch/std",
+	"pallet-evm-precompile-modexp/std",
+	"pallet-evm-precompile-simple/std",
 ]

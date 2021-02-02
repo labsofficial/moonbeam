@@ -37,41 +37,15 @@ do
     fi
 done
 
-
-
 echo "relay ${RELAY_INDEX} - p2p-port: $((RELAY_PORT)), \
 http-port: $((RELAY_PORT + 1)) , ws-port: $((RELAY_PORT + 2))"
 
-# This part will insert the keys in the node
-bash -c "sleep 5; \
-insertKey() { \
-  curl http://localhost:$((RELAY_PORT + 1)) -H 'Content-Type:application/json;charset=utf-8' -d \"
-  {
-    \\\"jsonrpc\\\":\\\"2.0\\\",
-    \\\"id\\\":1,
-    \\\"method\\\":\\\"author_insertKey\\\",
-    \\\"params\\\": [
-      \\\"\$1\\\",
-      \\\"\$2\\\",
-      \\\"\$3\\\"
-    ]
-  }\"; \
-}; \
-\
-insertKey acco '${RELAY_SEEDS[$RELAY_INDEX]}' '${RELAY_SR25519_PUB[$RELAY_INDEX]}'; \
-insertKey stak '${RELAY_SEEDS[$RELAY_INDEX]}' '${RELAY_SR25519_PUB[$RELAY_INDEX]}'; \
-insertKey babe '${RELAY_SEEDS[$RELAY_INDEX]}' '${RELAY_SR25519_PUB[$RELAY_INDEX]}'; \
-insertKey gran '${RELAY_SEEDS[$RELAY_INDEX]}' '${RELAY_ED25519_PUB[$RELAY_INDEX]}'; \
-insertKey imon '${RELAY_SEEDS[$RELAY_INDEX]}' '${RELAY_SR25519_PUB[$RELAY_INDEX]}'; \
-insertKey audi '${RELAY_SEEDS[$RELAY_INDEX]}' '${RELAY_SR25519_PUB[$RELAY_INDEX]}'; \
-insertKey para '${RELAY_SEEDS[$RELAY_INDEX]}' '${RELAY_SR25519_PUB[$RELAY_INDEX]}'; \
-" &
-
-if [ -z "$RELAY_BASE_PREFIX" ]; then
-  RELAY_BASE_PATH="--tmp"
-else
-  RELAY_BASE_PATH="$RELAY_BASE_PREFIX-relay-$RELAY_INDEX"
+if [ -z "$POLKADOT_VERSION" ]; then
+  POLKADOT_VERSION="sha-`egrep -o 'paritytech/polkadot.*#([^\"]*)' Cargo.lock | \
+    head -1 | sed 's/.*#//' |  cut -c1-8`"
 fi
+
+echo "Using Polkadot revision #${POLKADOT_VERSION}"
 
 # The -v build:/build allows to pass the spec files from the build folder to the docker container
 docker run \
@@ -79,19 +53,21 @@ docker run \
   -p $RELAY_PORT:$RELAY_PORT \
   -p $((RELAY_PORT + 1)):$((RELAY_PORT + 1)) \
   -p $((RELAY_PORT + 2)):$((RELAY_PORT + 2)) \
-  -it purestake/moonbase-relay-testnet:latest \
-  /usr/local/bin/polkadot \
-    --chain /$POLKADOT_SPEC_RAW \
-    --node-key ${NODE_KEYS[$RELAY_INDEX]} \
-    $RELAY_BASE_PATH \
-    --validator \
-    --force-authoring \
-    --name relay_$RELAY_INDEX \
-    --rpc-methods=Unsafe \
-    --unsafe-rpc-external \
-    --unsafe-ws-external \
-    --port $((RELAY_PORT)) \
-    --rpc-port $((RELAY_PORT + 1)) \
-    --ws-port $((RELAY_PORT + 2)) \
-    $BOOTNODES_ARGS \
-    '-linfo,evm=trace,ethereum=trace,rpc=trace'
+  -it purestake/moonbase-relay-testnet:$POLKADOT_VERSION \
+    /usr/local/bin/polkadot \
+      --chain rococo-local \
+      --${WELL_KNOWN_USERS[$RELAY_INDEX]} \
+      --node-key ${NODE_KEYS[$RELAY_INDEX]} \
+      --base-path /tmp \
+      --validator \
+      --force-authoring \
+      --name relay_$RELAY_INDEX \
+      --rpc-methods=Unsafe \
+      --unsafe-rpc-external \
+      --unsafe-ws-external \
+      --rpc-cors all \
+      --port $((RELAY_PORT)) \
+      --rpc-port $((RELAY_PORT + 1)) \
+      --ws-port $((RELAY_PORT + 2)) \
+      $BOOTNODES_ARGS \
+      '-linfo,evm=debug,ethereum=trace,rpc=trace,txpool=debug,polkadot_parachain=debug'
