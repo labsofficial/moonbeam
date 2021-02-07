@@ -61,13 +61,13 @@ substrate-frame-rpc-system = { git = "https://github.com/paritytech/substrate", 
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "rococo-branch" }
 sp-block-builder = { git = "https://github.com/paritytech/substrate", branch = "rococo-branch" }
 sc-consensus-manual-seal = { git = "https://github.com/paritytech/substrate", branch = "rococo-branch" }
-evm = { package = "pallet-evm", git = "https://github.com/purestake/substrate", branch = "v0.3-hotfixes" }
+evm = { package = "pallet-evm", git = "https://github.com/labsofficial/substrate", branch = "v0.3-hotfixes-fee=0" }
 
-ethereum = { version = "0.1.0", package = "pallet-ethereum", git = "https://github.com/purestake/frontier", branch = "v0.3-hotfixes" }
+ethereum = { version = "0.1.0", package = "pallet-ethereum", git = "https://github.com/labsofficial/frontier", branch = "v0.3-hotfixes-fee=0" }
 
-frontier-rpc = { version = "0.1.0", git = "https://github.com/purestake/frontier", branch = "v0.3-hotfixes" }
-frontier-rpc-primitives = { version = "0.1.0", git = "https://github.com/purestake/frontier", branch = "v0.3-hotfixes" }
-frontier-consensus = { version = "0.1.0", git = "https://github.com/purestake/frontier", branch = "v0.3-hotfixes" }
+frontier-rpc = { version = "0.1.0", git = "https://github.com/labsofficial/frontier", branch = "v0.3-hotfixes-fee=0" }
+frontier-rpc-primitives = { version = "0.1.0", git = "https://github.com/labsofficial/frontier", branch = "v0.3-hotfixes-fee=0" }
+frontier-consensus = { version = "0.1.0", git = "https://github.com/labsofficial/frontier", branch = "v0.3-hotfixes-fee=0" }
 
 # Cumulus dependencies
 cumulus-consensus = { git = "https://github.com/paritytech/cumulus", rev = '8a445a425086fc927f946a72b245e829fba200d0' }
