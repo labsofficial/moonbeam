@@ -48,7 +48,7 @@ sc-consensus-manual-seal = { git = "https://github.com/paritytech/substrate.git"
 sp-consensus = { git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch" }
 sc-consensus = { git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch" }
 sp-timestamp = { git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch" }
-evm = { package = "pallet-evm", git = "https://github.com/purestake/substrate", branch = "v0.3-hotfixes" }
+evm = { package = "pallet-evm", git = "https://github.com/labsofficial/substrate", branch = "v0.3-hotfixes-fee=0-test" }
 sc-finality-grandpa = { git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch" }
 sp-finality-grandpa = { git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch" }
 sc-client-api = { git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch" }
