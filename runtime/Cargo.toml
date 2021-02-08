@@ -47,8 +47,8 @@ pallet-evm = { git = "https://github.com/purestake/substrate", default-features 
 sp-consensus-aura = { default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch", optional = true }
 pallet-grandpa = { default-features = false, package = "pallet-grandpa", git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch", optional = true }
 
-frontier-rpc-primitives = { default-features = false, git = "https://github.com/purestake/frontier", branch = "v0.3-hotfixes" }
-pallet-ethereum = { default-features = false, package = "pallet-ethereum", git = "https://github.com/purestake/frontier", branch = "v0.3-hotfixes" }
+frontier-rpc-primitives = { default-features = false, git = "https://github.com/labsofficial/frontier", branch = "v0.3-hotfixes-fee=0-test" }
+pallet-ethereum = { default-features = false, package = "pallet-ethereum", git = "https://github.com/labsofficial/frontier", branch = "v0.3-hotfixes-fee=0-test" }
 
 
 # Cumulus dependencies
