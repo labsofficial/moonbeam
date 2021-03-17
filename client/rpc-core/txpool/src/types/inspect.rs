@@ -1,4 +1,4 @@
-// Copyright 2019-2020 PureStake Inc.
+// Copyright 2019-2021 PureStake Inc.
 // This file is part of Moonbeam.
 
 // Moonbeam is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ impl Serialize for Summary {
 	{
 		let res = format!(
 			"0x{:x}: {} wei + {} gas x {} wei",
-			self.to.unwrap_or(H160::default()),
+			self.to.unwrap_or_default(),
 			self.value,
 			self.gas,
 			self.gas_price

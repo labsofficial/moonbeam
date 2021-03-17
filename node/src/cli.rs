@@ -1,4 +1,4 @@
-// Copyright 2019-2020 PureStake Inc.
+// Copyright 2019-2021 PureStake Inc.
 // This file is part of Moonbeam.
 
 // Moonbeam is free software: you can redistribute it and/or modify
@@ -14,8 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moonbeam.  If not, see <http://www.gnu.org/licenses/>.
 
+//! Moonbeam CLI Library. Built with structopt
+//!
+//! This module defines the Moonbeam node's Command Line Interface (CLI)
+//! It is built using structopt and inherits behavior from Substrate's sc_cli crate.
+
 use sp_core::H160;
 use std::path::PathBuf;
+use std::str::FromStr;
 use structopt::StructOpt;
 
 /// Sub-commands supported by the collator.
@@ -30,7 +36,7 @@ pub enum Subcommand {
 	ExportGenesisWasm(ExportGenesisWasmCommand),
 
 	/// Build a chain specification.
-	BuildSpec(sc_cli::BuildSpecCmd),
+	BuildSpec(BuildSpecCommand),
 
 	/// Validate blocks.
 	CheckBlock(sc_cli::CheckBlockCmd),
@@ -49,6 +55,22 @@ pub enum Subcommand {
 
 	/// Revert the chain to a previous state.
 	Revert(sc_cli::RevertCmd),
+}
+
+#[derive(Debug, StructOpt)]
+pub struct BuildSpecCommand {
+	#[structopt(flatten)]
+	pub base: sc_cli::BuildSpecCmd,
+
+	/// Number of accounts to be funded in the genesis
+	/// Warning: This flag implies a development spec and overrides any explicitly supplied spec
+	#[structopt(long, conflicts_with = "chain")]
+	pub accounts: Option<u32>,
+
+	/// Mnemonic from which we can derive funded accounts in the genesis
+	/// Warning: This flag implies a development spec and overrides any explicitly supplied spec
+	#[structopt(long, conflicts_with = "chain")]
+	pub mnemonic: Option<String>,
 }
 
 /// Command for exporting the genesis state of the parachain
@@ -95,6 +117,16 @@ pub struct RunCmd {
 	/// Id of the parachain this collator collates for.
 	#[structopt(long)]
 	pub parachain_id: Option<u32>,
+
+	/// Enable the development service to run without a backing relay chain
+	#[structopt(long)]
+	pub dev_service: bool,
+
+	/// When blocks should be sealed in the dev service.
+	///
+	/// Options are "instant", "manual", or timer interval in milliseconds
+	#[structopt(long, default_value = "instant")]
+	pub sealing: Sealing,
 
 	/// Public identity for participating in staking and receiving rewards
 	#[structopt(long, parse(try_from_str = parse_h160))]
@@ -163,5 +195,32 @@ impl RelayChainCli {
 			chain_id,
 			base: polkadot_cli::RunCmd::from_iter(relay_chain_args),
 		}
+	}
+}
+
+/// Block authoring scheme to be used by the dev service.
+#[derive(Debug)]
+pub enum Sealing {
+	/// Author a block immediately upon receiving a transaction into the transaction pool
+	Instant,
+	/// Author a block upon receiving an RPC command
+	Manual,
+	/// Author blocks at a regular interval specified in milliseconds
+	Interval(u64),
+}
+
+impl FromStr for Sealing {
+	type Err = String;
+
+	fn from_str(s: &str) -> Result<Self, Self::Err> {
+		Ok(match s {
+			"instant" => Self::Instant,
+			"manual" => Self::Manual,
+			s => {
+				let millis =
+					u64::from_str_radix(s, 10).map_err(|_| "couldn't decode sealing param")?;
+				Self::Interval(millis)
+			}
+		})
 	}
 }

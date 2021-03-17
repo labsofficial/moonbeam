@@ -1,4 +1,4 @@
-// Copyright 2019-2020 PureStake Inc.
+// Copyright 2019-2021 PureStake Inc.
 // This file is part of Moonbeam.
 
 // Moonbeam is free software: you can redistribute it and/or modify
@@ -51,14 +51,14 @@ fn block_hash_serialize<S>(hash: &Option<H256>, serializer: S) -> Result<S::Ok, 
 where
 	S: Serializer,
 {
-	serializer.serialize_str(&format!("0x{:x}", hash.unwrap_or(H256::default())))
+	serializer.serialize_str(&format!("0x{:x}", hash.unwrap_or_default()))
 }
 
 fn to_serialize<S>(hash: &Option<H160>, serializer: S) -> Result<S::Ok, S::Error>
 where
 	S: Serializer,
 {
-	serializer.serialize_str(&format!("0x{:x}", hash.unwrap_or(H160::default())))
+	serializer.serialize_str(&format!("0x{:x}", hash.unwrap_or_default()))
 }
 
 impl GetT for Transaction {
