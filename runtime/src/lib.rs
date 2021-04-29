@@ -410,6 +410,12 @@ pub struct TransactionConverter;
 
 impl fp_rpc::ConvertTransaction<UncheckedExtrinsic> for TransactionConverter {
 	fn convert_transaction(&self, transaction: pallet_ethereum::Transaction) -> UncheckedExtrinsic {
+		log::debug!(
+			target: "evm",
+			"[gasFix] ConvertTransaction<UncheckedExtrinsic> called with gas price {:?}",
+			transaction.gas_price
+		);
+
 		UncheckedExtrinsic::new_unsigned(
 			pallet_ethereum::Call::<Runtime>::transact(transaction).into(),
 		)
@@ -421,6 +427,12 @@ impl fp_rpc::ConvertTransaction<opaque::UncheckedExtrinsic> for TransactionConve
 		&self,
 		transaction: pallet_ethereum::Transaction,
 	) -> opaque::UncheckedExtrinsic {
+		log::debug!(
+			target: "evm",
+			"[gasFix] ConvertTransaction<opaque::UncheckedExtrinsic> called with gas price {:?}",
+			transaction.gas_price
+		);
+
 		let extrinsic = UncheckedExtrinsic::new_unsigned(
 			pallet_ethereum::Call::<Runtime>::transact(transaction).into(),
 		);
